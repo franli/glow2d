@@ -5,8 +5,6 @@ https://github.com/kamenbliznashki/normalizing_flows/blob/master/glow.py
 [1] https://arxiv.org/abs/1807.03039
 """
 import os
-import math
-import argparse
 import numpy as np
 import torch
 import torch.nn as nn
@@ -40,7 +38,6 @@ class Actnorm(nn.Module):
         return x, logdet
 
 
-
 class Invertible1x1Conv(nn.Module):
     def __init__(self, dim=2):
         super().__init__()
@@ -57,7 +54,6 @@ class Invertible1x1Conv(nn.Module):
         w_inv = self.w.t().inverse()
         logdet = - torch.slogdet(self.w)[-1]
         return z @ w_inv, logdet
-
 
 
 class AffineCoupling(nn.Module):
@@ -112,7 +108,6 @@ class AffineCoupling(nn.Module):
 # --------------------
 # Container layers
 # --------------------
-
 class FlowSequential(nn.Sequential):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -159,7 +154,6 @@ class FlowLevel(nn.Module):
 # --------------------
 # Model
 # --------------------
-
 class Glow(nn.Module):
     """ Glow multi-scale architecture with depth of flow K and number of levels L"""
     def __init__(self, width=128, depth=10, n_levels=1, data_dim=2):
@@ -183,7 +177,6 @@ class Glow(nn.Module):
         sum_logdets = sum_logdets + logdet
 
         return z, sum_logdets
-
 
     def inverse(self, z=None, batch_size=32, z_std=1.):
         if z is None:

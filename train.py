@@ -8,10 +8,6 @@ import torch
 from model import Flow
 import util
 
-import matplotlib
-matplotlib.use('Agg')
-import matplotlib.pyplot as plt
-
 
 device = torch.device('cuda')
 
