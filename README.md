@@ -25,8 +25,8 @@ Sample images during training:
 
 - 2spirals dataset
 
-![](images\fig1.png)
+![](images/fig1.png)
 
 - 8gaussians dataset
 
-![](images\fig2.png)
+![](images/fig2.png)
