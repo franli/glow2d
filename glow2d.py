@@ -113,18 +113,18 @@ class FlowSequential(nn.Sequential):
         super().__init__(*args, **kwargs)
 
     def forward(self, x):
-        sum_logdets = 0.
+        slogdet = 0.
         for module in self:
             x, logdet = module(x)
-            sum_logdets = sum_logdets + logdet
-        return x, sum_logdets
+            slogdet = slogdet + logdet
+        return x, slogdet
 
     def inverse(self, z):
-        sum_logdets = 0.
+        slogdet = 0.
         for module in reversed(self):
             z, logdet = module.inverse(z)
-            sum_logdets = sum_logdets + logdet
-        return z, sum_logdets
+            slogdet = slogdet + logdet
+        return z, slogdet
 
 
 class FlowStep(FlowSequential):
@@ -168,28 +168,27 @@ class Glow(nn.Module):
         self.register_buffer('base_dist_var', torch.eye(2))
 
     def forward(self, x):
-        sum_logdets = 0
+        slogdet = 0
         for m in self.flowlevels:
             z, logdet = m(x)
-            sum_logdets = sum_logdets + logdet
+            slogdet = slogdet + logdet
 
         z, logdet = self.flowstep(z)
-        sum_logdets = sum_logdets + logdet
+        slogdet = slogdet + logdet
 
-        return z, sum_logdets
+        return z, slogdet
 
     def inverse(self, z=None, batch_size=32, z_std=1.):
         if z is None:
             z = z_std * self.base_dist.sample((batch_size,))
 
-        sum_logdets = 0
-        x, logdet = self.flowstep.inverse(z)
+        x, slogdet = self.flowstep.inverse(z)
 
         for m in reversed(self.flowlevels):
             x, logdet = m.inverse(x)
-            sum_logdets = sum_logdets + logdet
+            slogdet = slogdet + logdet
 
-        return x, sum_logdets
+        return x, slogdet
 
 
     @property
